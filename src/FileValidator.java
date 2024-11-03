@@ -3,6 +3,7 @@ import implementingstreams.ImporterManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileValidator {
@@ -91,12 +92,12 @@ public class FileValidator {
      * @return The validated list of file names.
      */
     public List<String> validateFilesStream() {
-        Stream<String> fileNameStream = createStream(sourceFileNames);
-        fileNameStream = makeLowerCaseStream(fileNameStream);
-        fileNameStream = removeDraftFilesStream(fileNameStream);
-        fileNameStream = removeHiddenFilesStream(fileNameStream);
-        fileNameStream = sortListStream(fileNameStream);
-        return collectStreamResults(fileNameStream);
+        return sourceFileNames.stream()
+                .map(String::toLowerCase) // Convert all file names to lowercase
+                .filter(name -> !name.contains("_draft")) // Remove draft files
+                .filter(name -> !name.startsWith(".")) // Remove hidden files
+                .sorted() // Sort the list in natural order
+                .collect(Collectors.toList()); // Collect the results into a list
     }
 
     /**
@@ -106,7 +107,8 @@ public class FileValidator {
      * @return Created stream.
      */
     public Stream<String> createStream(List<String> files) {
-        return null;
+
+        return files.stream();
     }
 
     /**
@@ -116,7 +118,8 @@ public class FileValidator {
      * @return Processed stream.
      */
     public Stream<String> makeLowerCaseStream(Stream<String> stream) {
-        return stream;
+
+        return stream.map(String::toLowerCase);
     }
 
     /**
@@ -126,7 +129,8 @@ public class FileValidator {
      * @return Processed stream.
      */
     public Stream<String> removeDraftFilesStream(Stream<String> stream) {
-        return stream;
+
+        return stream.filter(name -> !name.toLowerCase().contains("_draft"));
     }
 
     /**
@@ -136,7 +140,8 @@ public class FileValidator {
      * @return Processed stream.
      */
     public Stream<String> removeHiddenFilesStream(Stream<String> stream) {
-        return stream;
+
+        return stream.filter(name -> !name.startsWith("."));
     }
 
     /**
@@ -146,7 +151,8 @@ public class FileValidator {
      * @return Processed stream.
      */
     public Stream<String> sortListStream(Stream<String> stream) {
-        return stream;
+
+        return stream.sorted();
     }
 
     /**
@@ -156,7 +162,8 @@ public class FileValidator {
      * @return List of results.
      */
     public List<String> collectStreamResults(Stream<String> stream) {
-        return null;
+
+        return stream.collect(Collectors.toList());
     }
 
 }
